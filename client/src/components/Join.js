@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import { Link } from 'react-router-dom';
+import ProfileImageButton from './ProfileImagePop';
 
 function Join() {
   let idRef = useRef();
@@ -15,6 +16,8 @@ function Join() {
   let [confirmKeyword,setConfirmKeyword ] = useState("");
 
   let [pwdFlg, setPwdFlg] = useState(false);
+
+  let [openProfile, setOpenProfile] = useState(false);
   
   useEffect(()=>{
     setConfirmKeyword("");
@@ -35,11 +38,14 @@ function Join() {
     if(!pwdFlg){
       alert("비밀번호를 확인해주세요.");
     } else{
-      
+
     }
   }
 
+  
+
   return (
+    
     <Container maxWidth="xs">
       <Box
         display="flex"
@@ -48,6 +54,8 @@ function Join() {
         justifyContent="center"
         minHeight="100vh"
       >
+        
+
         <Typography variant="h4" gutterBottom>
           회원가입
         </Typography>
@@ -66,6 +74,26 @@ function Join() {
           margin="normal" 
           fullWidth 
         />
+
+        <TextField 
+          // inputRef={emailRef}
+          label="Nickname" 
+          variant="outlined" 
+          margin="normal" 
+          fullWidth 
+        />
+
+        {/* <Button 
+          variant="contained" 
+          color="primary" 
+          width="" 
+          onClick={()=>{
+            setOpenProfile(true)
+          }}
+        >
+          프로필 이미지 선택
+        </Button> */}
+        <ProfileImageButton open={openProfile} onClose={()=>setOpenProfile(false)}/>
 
         <TextField
           inputRef={pwdRef}
