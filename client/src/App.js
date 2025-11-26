@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { Box, CssBaseline } from '@mui/material';
+import { Box, CssBaseline, ThemeProvider } from '@mui/material';
 import Login from './components/Login';
 import Join from './components/Join'; // Join으로 변경
 import Feed from './components/Feed';
@@ -11,28 +11,23 @@ import MyPage from './components/MyPage';
 import LeftBar from './components/LeftSidebar';
 import RightBar from "./components/RightSidebar";
 import Main from './components/MainPage';
+import Setting from './components/Setting';
+
+import { getTheme } from './theme';
+import { ThemeModeProvider, ThemeModeContext } from './components/context/ThemeContext';
 
 
-function App() {
+function AppContent() {
   const location = useLocation();
+  let navigate = useNavigate();
+  let token = localStorage.getItem("token");
+
+  const { mode } = useContext(ThemeModeContext);
+  const theme = getTheme(mode);
+
   const isAuthPage = location.pathname === '/' || location.pathname === '/join';
   const withoutSet = location.pathname === '/set';
   const withoutSearch = location.pathname === '/search';
-  let navigate = useNavigate();
-
-  let token = localStorage.getItem("token");
-
-  // let userInfo = null;
-  // if(token){
-  //   try {
-  //     userInfo = jwtDecode(token);
-  //     console.log(userInfo);
-  //   } catch (err) {
-  //     console.error("JWT Decode Error:", err);
-  //     localStorage.removeItem("token");
-  //     token = null;
-  //   }
-  // }
 
   useEffect(() => {
     if (!isAuthPage && !token) {
@@ -42,24 +37,33 @@ function App() {
   }, [isAuthPage, token, navigate]);
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      {/* {!isAuthPage && <Menu />}  */}
-        {/* 로그인과 회원가입 페이지가 아닐 때만 Menu 렌더링 */}
-      {!isAuthPage && <LeftBar />}
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/join" element={<Join />} />
-          <Route path="/feed" element={<Feed />} />
-          {/* <Route path="/register" element={<Register />} /> */}
-          <Route path="/profile" element={<MyPage />} />
-          <Route path="/main" element={<Main />} />
-        </Routes>
+    <ThemeProvider theme={theme}>
+      <Box sx={{ display: 'flex' }}>
+        <CssBaseline />
+        {/* {!isAuthPage && <Menu />}  */}
+          {/* 로그인과 회원가입 페이지가 아닐 때만 Menu 렌더링 */}
+        {!isAuthPage && <LeftBar />}
+        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/join" element={<Join />} />
+            <Route path="/feed" element={<Feed />} />
+            {/* <Route path="/register" element={<Register />} /> */}
+            <Route path="/profile" element={<MyPage />} />
+            <Route path="/main" element={<Main />} />
+            <Route path="/setting" element={<Setting />} />
+          </Routes>
+        </Box>
+        {(!isAuthPage && !withoutSet && !withoutSearch) && <RightBar />}
       </Box>
-      {(!isAuthPage && !withoutSet && !withoutSearch) && <RightBar />}
-    </Box>
+    </ThemeProvider>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <ThemeModeProvider>
+      <AppContent />
+    </ThemeModeProvider>
+  );
+}

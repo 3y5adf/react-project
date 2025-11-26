@@ -68,7 +68,7 @@ export default function LeftSidebar() {
           {!isSmall && <ListItemText primary="글 작성" />}
         </ListItemButton>
 
-        <ListItemButton onClick={() => navigate("/set")}>
+        <ListItemButton onClick={() => navigate("/setting")}>
           <ListItemIcon><SettingsIcon /></ListItemIcon>
           {!isSmall && <ListItemText primary="설정" />}
         </ListItemButton>
