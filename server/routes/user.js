@@ -148,7 +148,19 @@ router.get("/:userId", async (req, res)=>{
   let {userId} = req.params;
   
   try {
-    let sql = "SELECT * FROM SNS_USER WHERE USERID = ?"
+    let sql = "SELECT U.*, IFNULL(CNT, 0) AS CNT, IFNULL(CCNT, 0) AS CCNT "
+            + "FROM SNS_USER U "
+            + "LEFT JOIN ( "
+            + " SELECT USERID, COUNT(*) AS CNT "
+            + " FROM SNS_FEED "
+            + " GROUP BY USERID "
+            + ")T ON U.USERID = T.USERID "
+            + "LEFT JOIN ( "
+            + " SELECT USERID, COUNT(*) AS CCNT "
+            + " FROM SNS_COMMENT "
+            + " GROUP BY USERID "
+            + ")C ON U.USERID = C.USERID "
+            + "WHERE U.USERID = ? "
     let [list] = await db.query(sql, [userId]);
 
     res.json({
