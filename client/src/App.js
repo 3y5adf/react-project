@@ -1,19 +1,45 @@
-import React from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { Box, CssBaseline } from '@mui/material';
 import Login from './components/Login';
 import Join from './components/Join'; // Join으로 변경
-// import Feed from './components/Feed';
+import Feed from './components/Feed';
 // import Register from './components/Register';
-// import MyPage from './components/MyPage';
+import MyPage from './components/MyPage';
 // import Menu from './components/Menu'; // Menu로 변경
 
 import LeftBar from './components/LeftSidebar';
+import RightBar from "./components/RightSidebar";
 import Main from './components/MainPage';
+
 
 function App() {
   const location = useLocation();
   const isAuthPage = location.pathname === '/' || location.pathname === '/join';
+  const withoutSet = location.pathname === '/set';
+  const withoutSearch = location.pathname === '/search';
+  let navigate = useNavigate();
+
+  let token = localStorage.getItem("token");
+
+  // let userInfo = null;
+  // if(token){
+  //   try {
+  //     userInfo = jwtDecode(token);
+  //     console.log(userInfo);
+  //   } catch (err) {
+  //     console.error("JWT Decode Error:", err);
+  //     localStorage.removeItem("token");
+  //     token = null;
+  //   }
+  // }
+
+  useEffect(() => {
+    if (!isAuthPage && !token) {
+      alert("로그인 후 이용해주세요.");
+      navigate("/");
+    }
+  }, [isAuthPage, token, navigate]);
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -25,12 +51,13 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/join" element={<Join />} />
-          {/* <Route path="/feed" element={<Feed />} /> */}
+          <Route path="/feed" element={<Feed />} />
           {/* <Route path="/register" element={<Register />} /> */}
-          {/* <Route path="/mypage" element={<MyPage />} /> */}
+          <Route path="/profile" element={<MyPage />} />
           <Route path="/main" element={<Main />} />
         </Routes>
       </Box>
+      {(!isAuthPage && !withoutSet && !withoutSearch) && <RightBar />}
     </Box>
   );
 }

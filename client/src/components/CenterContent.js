@@ -9,7 +9,7 @@ export default function CenterContent() {
   };
 
   return (
-    <Box sx={{ flex: 1, height: "100vh", p: 2 }}>
+    <Box sx={{ flex: 1, height: "100vh"}}>
       {/* 탭 선택 */}
       <Tabs value={tabIndex} onChange={handleTabChange}>
         <Tab label="전체 채팅방" />

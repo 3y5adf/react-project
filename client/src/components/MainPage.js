@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Box } from "@mui/material";
 // import LeftSidebar from "../components/LeftSidebar";
 import CenterContent from "../components/CenterContent";
-import RightSidebar from "../components/RightSidebar";
 // import WritePostModal from "../components/WritePostModal";
 
 export default function MainPage() {
@@ -14,7 +13,7 @@ export default function MainPage() {
 
       <CenterContent />
 
-      <RightSidebar />
+      {/* <RightSidebar /> */}
 
       {/* <WritePostModal
         open={openWrite}

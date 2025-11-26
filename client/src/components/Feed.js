@@ -21,56 +21,108 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
+  Tabs,
+  Tab,
+  Paper
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-const mockFeeds = [
-  {
-    id: 1,
-    title: '게시물 1',
-    description: '이것은 게시물 1의 설명입니다.',
-    image: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
-  },
-  {
-    id: 2,
-    title: '게시물 2',
-    description: '이것은 게시물 2의 설명입니다.',
-    image: 'https://images.unsplash.com/photo-1521747116042-5a810fda9664',
-  },
-  // 추가 피드 데이터
-];
+// const mockFeeds = [
+//   {
+//     id: 1,
+//     title: '게시물 1',
+//     description: '이것은 게시물 1의 설명입니다.',
+//     image: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
+//   },
+//   {
+//     id: 2,
+//     title: '게시물 2',
+//     description: '이것은 게시물 2의 설명입니다.',
+//     image: 'https://images.unsplash.com/photo-1521747116042-5a810fda9664',
+//   },
+//   // 추가 피드 데이터
+// ];
 
 function Feed() {
-  const [open, setOpen] = useState(false);
-  const [selectedFeed, setSelectedFeed] = useState(null);
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState('');
+  // const [open, setOpen] = useState(false);
+  // const [selectedFeed, setSelectedFeed] = useState(null);
+  // const [comments, setComments] = useState([]);
+  // const [newComment, setNewComment] = useState('');
 
-  const handleClickOpen = (feed) => {
-    setSelectedFeed(feed);
-    setOpen(true);
-    setComments([
-      { id: 'user1', text: '멋진 사진이에요!' },
-      { id: 'user2', text: '이 장소에 가보고 싶네요!' },
-      { id: 'user3', text: '아름다운 풍경이네요!' },
-    ]); // 샘플 댓글 추가
-    setNewComment(''); // 댓글 입력 초기화
-  };
+  // const handleClickOpen = (feed) => {
+  //   setSelectedFeed(feed);
+  //   setOpen(true);
+  //   setComments([
+  //     { id: 'user1', text: '멋진 사진이에요!' },
+  //     { id: 'user2', text: '이 장소에 가보고 싶네요!' },
+  //     { id: 'user3', text: '아름다운 풍경이네요!' },
+  //   ]); // 샘플 댓글 추가
+  //   setNewComment(''); // 댓글 입력 초기화
+  // };
 
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedFeed(null);
-    setComments([]); // 모달 닫을 때 댓글 초기화
-  };
+  // const handleClose = () => {
+  //   setOpen(false);
+  //   setSelectedFeed(null);
+  //   setComments([]); // 모달 닫을 때 댓글 초기화
+  // };
 
-  const handleAddComment = () => {
-    if (newComment.trim()) {
-      setComments([...comments, { id: 'currentUser', text: newComment }]); // 댓글 작성자 아이디 추가
-      setNewComment('');
-    }
+  // const handleAddComment = () => {
+  //   if (newComment.trim()) {
+  //     setComments([...comments, { id: 'currentUser', text: newComment }]); // 댓글 작성자 아이디 추가
+  //     setNewComment('');
+  //   }
+  // };
+
+  const [tabIndex, setTabIndex] = useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setTabIndex(newValue);
   };
 
   return (
+    <>
+      <Box sx={{ flex: 1, height: "100vh"}}>
+        {/* 탭 선택 */}
+        <Tabs value={tabIndex} onChange={handleTabChange}>
+          <Tab label="전체" />
+          <Tab label="자유" />
+          <Tab label="공지" />
+          <Tab label="문의" />
+        </Tabs>
+  
+        <Paper sx={{ mt: 2, p: 2, height: "calc(100% - 64px)" }}>
+          {tabIndex === 0 && (
+            <Box>
+              <Typography variant="h6">전체 글 목록</Typography>
+              {/* 전체 채팅방 리스트 여기에 */}
+            </Box>
+          )}
+  
+          {tabIndex === 1 && (
+            <Box>
+              <Typography variant="h6">자유게시판</Typography>
+              {/* 참여중인 채팅방 리스트 여기에 */}
+            </Box>
+          )}
+  
+          {tabIndex === 2 && (
+            <Box>
+              <Typography variant="h6">공지사항</Typography>
+            </Box>
+          )}
+
+          {tabIndex === 3 && (
+            <Box>
+              <Typography variant="h6">문의사항</Typography>
+            </Box>
+          )}
+        </Paper>
+      </Box>
+    </>
+    )
+
+
+    {/* 
     <Container maxWidth="md">
       <AppBar position="static">
         <Toolbar>
@@ -102,7 +154,8 @@ function Feed() {
         </Grid2>
       </Box>
 
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg"> {/* 모달 크기 조정 */}
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg"> 
+        //모달크기 조정
         <DialogTitle>
           {selectedFeed?.title}
           <IconButton
@@ -133,9 +186,11 @@ function Feed() {
               {comments.map((comment, index) => (
                 <ListItem key={index}>
                   <ListItemAvatar>
-                    <Avatar>{comment.id.charAt(0).toUpperCase()}</Avatar> {/* 아이디의 첫 글자를 아바타로 표시 */}
+                    <Avatar>{comment.id.charAt(0).toUpperCase()}</Avatar>
+                       //아이디의 첫 글자를 아바타로 표시
                   </ListItemAvatar>
-                  <ListItemText primary={comment.text} secondary={comment.id} /> {/* 아이디 표시 */}
+                  <ListItemText primary={comment.text} secondary={comment.id} /> 
+                    //아이디 표시
                 </ListItem>
               ))}
             </List>
@@ -163,7 +218,7 @@ function Feed() {
         </DialogActions>
       </Dialog>
     </Container>
-  );
+    */}
 }
 
 export default Feed;

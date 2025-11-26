@@ -17,7 +17,7 @@ export default function LeftSidebar() {
   const [openWrite, setOpenWrite] = useState(false);
   let navigate = useNavigate();
   const theme = useTheme();
-  const isSmall = useMediaQuery(theme.breakpoints.down(1000)); // sm 이하이면 true
+  const isSmall = useMediaQuery(theme.breakpoints.down(1000)); 
 
   return (
     <Box
