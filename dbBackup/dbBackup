@@ -163,7 +163,7 @@ CREATE TABLE `sns_feed` (
   PRIMARY KEY (`FEEDNO`),
   KEY `USERID` (`USERID`),
   CONSTRAINT `sns_feed_ibfk_1` FOREIGN KEY (`USERID`) REFERENCES `sns_user` (`USERID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,6 +172,7 @@ CREATE TABLE `sns_feed` (
 
 LOCK TABLES `sns_feed` WRITE;
 /*!40000 ALTER TABLE `sns_feed` DISABLE KEYS */;
+INSERT INTO `sns_feed` VALUES (2,'admin01','테스트','테스트1',0,'2025-11-26 18:52:56','2025-11-26 18:52:56','N'),(3,'admin01','엉엉','앙앙',0,'2025-11-26 18:58:19','2025-11-26 18:58:19','F'),(4,'qwer','오','왓',0,'2025-11-26 20:04:36','2025-11-26 20:04:36','F');
 /*!40000 ALTER TABLE `sns_feed` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -271,7 +272,7 @@ CREATE TABLE `sns_user` (
   `PASSWORD` varchar(300) NOT NULL,
   `NICKNAME` varchar(50) NOT NULL,
   `EMAIL` varchar(100) NOT NULL,
-  `IMGNO` int NOT NULL,
+  `IMGPATH` varchar(300) NOT NULL,
   `STATUS` char(1) NOT NULL DEFAULT 'U',
   `CDATETIME` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `UDATETIME` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -286,6 +287,7 @@ CREATE TABLE `sns_user` (
 
 LOCK TABLES `sns_user` WRITE;
 /*!40000 ALTER TABLE `sns_user` DISABLE KEYS */;
+INSERT INTO `sns_user` VALUES ('admin01','$2b$10$tuOLOTObZOVz8RsqQp82SuEkZwjBsgJxXBCN65AIRLy1QMBvnYSha','관리자','admin01@gmail.com','http://localhost:3020/user/uploads/profile-images/profile01.png','A','2025-11-26 18:03:18','2025-11-26 18:03:18',0),('asdf1234','$2b$10$VlWqIdbgnh7Kiv5qGI9r9.rM/3U3BvaP0LvTPZKc7KEJpqCNiT28u','asdf1234','asdf1234@gmail.com','http://localhost:3020/user/uploads/profile-images/profile10.png','U','2025-11-26 15:43:21','2025-11-26 15:43:21',0),('qwer','$2b$10$eFkiubb8rS3iPkXfn7Gud.ckbnyDAaPcCa6GjwVOZV73U3BAS8Jni','qwer','qwer@gmail.com','http://localhost:3020/user/uploads/profile-images/profile13.png','U','2025-11-26 20:04:23','2025-11-26 20:04:23',0);
 /*!40000 ALTER TABLE `sns_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -306,4 +308,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-25 18:36:08
+-- Dump completed on 2025-11-26 20:08:46
