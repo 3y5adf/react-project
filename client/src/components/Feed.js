@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Grid2,
   AppBar,
@@ -23,9 +23,11 @@ import {
   Avatar,
   Tabs,
   Tab,
-  Paper
+  Paper,
+  Stack
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { useNavigate } from 'react-router-dom';
 
 // const mockFeeds = [
 //   {
@@ -74,9 +76,140 @@ function Feed() {
   // };
 
   const [tabIndex, setTabIndex] = useState(0);
+  let [list, setList] = useState([]);
+  let navigate = useNavigate();
+  // let [typeWord, setTypeWord] = useState("");
+
+  useEffect(()=>{
+    fetchPosts(tabIndex);
+    console.log(tabIndex);
+  }, [tabIndex]);
+
+  const fetchPosts = async (tabIndex) => {
+    let category = "";
+
+    switch(tabIndex) {
+      case 0: category = "all"; break;
+      case 1: category = "free"; break;
+      case 2: category = "notice"; break;
+      case 3: category = "qna"; break;
+      default: category = "all";
+    }
+    console.log(category);
+    fetch("http://localhost:3020/feed/"+category)
+      .then(res=>res.json())
+      .then(data =>{
+        console.log(data);
+        setList(data.list);
+      })
+  };
+
+  // const lastTabClick = useRef(0);
 
   const handleTabChange = (event, newValue) => {
+    // const now = Date.now();
+    // console.log(lastTabClick);
+    // 같은 탭을 클릭했을 때도 fetch
+    // if (tabIndex === newValue) {
+    //   fetchPosts(newValue);
+    // }
+
+    // lastTabClick.current = now;
+    console.log(event._reactName);
     setTabIndex(newValue);
+    console.log("newValue:",newValue);
+    console.log("tabIndex:",tabIndex);
+  };
+
+  const feedBoxClick = (userId, feedId) =>{
+    navigate("/feed/"+userId+"/"+feedId);
+  }
+
+  // function typeTag () {
+  //   if(info.TYPE=='F'){
+  //     setTypeWord("자유")
+  //   }
+  //   else if(Info.TYPE=='N'){
+  //     setTypeWord("공지")
+  //   }
+  //   else if(Info.TYPE=='Q'){
+  //     setTypeWord("문의")
+  //   }
+  // }
+
+  const feedList = () => {
+    return list.map((item) => (
+      <Box 
+        key={item.FEEDNO} 
+        sx={{ 
+          mb: 2, 
+          p: 2, 
+          border: '1px solid #ccc', 
+          borderRadius: '8px', 
+          cursor : "pointer"
+        }}
+        onClick={() => feedBoxClick(item.USERID, item.FEEDNO)}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+          <Box
+            sx={{
+              color : "black",
+              bgcolor : "skyblue",
+              fontWeight : "bold",
+              fontFamily: 'Arial, sans-serif',
+              mb:1,
+              width:45,
+              textAlign:"center",
+              borderRadius:1,
+              display: 'inline-block'
+            }}
+          >
+            {item.TYPE === 'F' ? '자유'
+            : item.TYPE === 'N' ? '공지'
+            : item.TYPE === 'Q' ? '문의'
+            : ''}
+          </Box>
+          
+          {item.CCNT > 0 && (
+            <Box
+              sx={{
+                mb: 1,
+                ml: 0.3,
+                py: 0.3,
+                color: 'red',
+                fontWeight: 'bold',
+                borderRadius: 1,
+                textAlign: 'center',
+                width: 30
+              }}
+            >
+              +{item.CCNT}
+            </Box>
+          )}
+        </Box>
+
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Avatar src={item.IMGPATH} />
+          <Box>
+            <Typography variant="subtitle1" fontWeight="bold">
+              {item.NICKNAME}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              @{item.USERID}
+            </Typography>
+          </Box>
+        </Stack>
+        <Typography variant="h6" sx={{ mt: 2 }}>
+          {item.TITLE}
+        </Typography>
+        <Typography sx={{ mt:1 }} variant="body2" color="text.secondary">
+          {item.CDATETIME === item.UDATETIME
+            ? item.CTIME
+            : item.UTIME+" (수정됨)"
+          }
+        </Typography>
+      </Box>
+    ));
   };
 
   return (
@@ -94,26 +227,28 @@ function Feed() {
           {tabIndex === 0 && (
             <Box>
               <Typography variant="h6">전체 글 목록</Typography>
-              {/* 전체 채팅방 리스트 여기에 */}
+              {feedList()}
             </Box>
           )}
   
           {tabIndex === 1 && (
             <Box>
               <Typography variant="h6">자유게시판</Typography>
-              {/* 참여중인 채팅방 리스트 여기에 */}
+              {feedList()}
             </Box>
           )}
   
           {tabIndex === 2 && (
             <Box>
               <Typography variant="h6">공지사항</Typography>
+              {feedList()}
             </Box>
           )}
 
           {tabIndex === 3 && (
             <Box>
               <Typography variant="h6">문의사항</Typography>
+              {feedList()}
             </Box>
           )}
         </Paper>

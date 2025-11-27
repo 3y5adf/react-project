@@ -4,6 +4,7 @@ import { Box, CssBaseline, ThemeProvider } from '@mui/material';
 import Login from './components/Login';
 import Join from './components/Join'; // Join으로 변경
 import Feed from './components/Feed';
+import FeedView from './components/FeedView';
 // import Register from './components/Register';
 import MyPage from './components/MyPage';
 // import Menu from './components/Menu'; // Menu로 변경
@@ -12,6 +13,7 @@ import LeftBar from './components/LeftSidebar';
 import RightBar from "./components/RightSidebar";
 import Main from './components/MainPage';
 import Setting from './components/Setting';
+import Notice from './components/Notice';
 
 import { getTheme } from './theme';
 import { ThemeModeProvider, ThemeModeContext } from './components/context/ThemeContext';
@@ -48,10 +50,12 @@ function AppContent() {
             <Route path="/" element={<Login />} />
             <Route path="/join" element={<Join />} />
             <Route path="/feed" element={<Feed />} />
+            <Route path="/feed/:userId/:feedId" element={<FeedView />} />
             {/* <Route path="/register" element={<Register />} /> */}
             <Route path="/profile" element={<MyPage />} />
             <Route path="/main" element={<Main />} />
             <Route path="/setting" element={<Setting />} />
+            <Route path="/notice" element={<Notice />} />
           </Routes>
         </Box>
         {(!isAuthPage && !withoutSet && !withoutSearch) && <RightBar />}

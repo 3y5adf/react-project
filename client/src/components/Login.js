@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import '../Project.css'
@@ -8,6 +8,10 @@ function Login() {
   let pwdRef = useRef();
 
   let navigate = useNavigate();
+
+  useEffect(()=>{
+    idRef.current?.focus();
+  }, []);
 
   function onLogin(param) {
     // console.log(param);
@@ -21,10 +25,12 @@ function Login() {
       .then( res => res.json() )
       .then( data => {
           console.log(data);
-          alert(data.msg);
           if(data.result){
             localStorage.setItem("token", data.token);
             navigate("/main");
+          } else {
+            alert(data.msg);  
+            return;
           }
           // if(data.result){
             // 
@@ -50,7 +56,16 @@ function Login() {
         </Typography>
         <TextField
           inputRef={idRef}
-          label="ID" variant="outlined" margin="normal" fullWidth />
+          label="ID" variant="outlined" margin="normal" fullWidth 
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              const param = {
+                id: idRef.current.value,
+                pwd: pwdRef.current.value
+              };
+              onLogin(param);
+            }
+          }}/>
         <TextField
           label="Password"
           variant="outlined"
@@ -58,6 +73,15 @@ function Login() {
           fullWidth
           type="password"
           inputRef={pwdRef}
+          onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            const param = {
+              id: idRef.current.value,
+              pwd: pwdRef.current.value
+            };
+            onLogin(param);
+          }
+        }}
         />
         <Button 
           onClick={()=>{

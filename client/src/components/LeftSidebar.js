@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, List, ListItemButton, ListItemIcon, ListItemText, useMediaQuery } from "@mui/material";
+import { Box, List, ListItemButton, ListItemIcon, ListItemText, useMediaQuery, Badge } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
@@ -11,6 +11,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import AddIcon from "@mui/icons-material/Add";
 
 import WritePostModal from "../components/WritePostModal";
+import Notice, { notificationsData } from "../components/Notice";
 import { useNavigate } from "react-router-dom";
 
 export default function LeftSidebar() {
@@ -18,6 +19,15 @@ export default function LeftSidebar() {
   let navigate = useNavigate();
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down(1000)); 
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleNoticeClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleNoticeClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <Box
@@ -48,10 +58,22 @@ export default function LeftSidebar() {
           {!isSmall && <ListItemText primary="게시판" />}
         </ListItemButton>
 
-        <ListItemButton onClick={() => navigate("/notice")}>
-          <ListItemIcon><NotificationsIcon /></ListItemIcon>
-          {!isSmall && <ListItemText primary="알림" />}
-        </ListItemButton>
+        <List>
+          <ListItemButton onClick={handleNoticeClick}>
+            <ListItemIcon>
+              <Badge
+                badgeContent={notificationsData.filter(n => !n.read).length}
+                color="error"
+              >
+                <NotificationsIcon />
+              </Badge>
+            </ListItemIcon>
+            {!isSmall && <ListItemText primary="알림" />}
+          </ListItemButton>
+
+          {/* Popover */}
+          <Notice anchorEl={anchorEl} onClose={handleNoticeClose} />
+        </List>
 
         <ListItemButton onClick={() => navigate("/message")}>
           <ListItemIcon><MailIcon /></ListItemIcon>

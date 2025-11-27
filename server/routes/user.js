@@ -121,7 +121,8 @@ router.post("/login", async (req, res)=>{
 
           let user = {
               userId : list[0].USERID,
-              userNickname : list[0].NICKNAME
+              userNickname : list[0].NICKNAME,
+              userStatus : list[0].STATUS
           };
 
           token = jwt.sign(user, JWT_KEY, {expiresIn : '1h'});

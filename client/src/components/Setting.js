@@ -24,6 +24,16 @@ export default function Setting() {
             변경권 구매
             
           </ListItem>
+          <hr></hr>
+          <ListItem>
+            로그아웃
+            
+          </ListItem>
+          <hr></hr>
+          <ListItem>
+            회원탈퇴
+            
+          </ListItem>
         </List>
       </Box>
   );
