@@ -88,7 +88,7 @@ router.post("/join", async (req, res)=>{
   try {
     let hashPwd = await bcrypt.hash(pwd, 10);
 
-    let sql = "INSERT INTO SNS_USER VALUES(?, ?, ?, ?, ?, 'U', NOW(), NOW(), 0)"
+    let sql = "INSERT INTO SNS_USER VALUES(?, ?, ?, ?, ?, 'U', NOW(), NOW(), 0, 'L')"
     let result = await db.query(sql, [id, hashPwd, nickname, email, profilePath]);
 
     res.json({
@@ -122,7 +122,8 @@ router.post("/login", async (req, res)=>{
           let user = {
               userId : list[0].USERID,
               userNickname : list[0].NICKNAME,
-              userStatus : list[0].STATUS
+              userStatus : list[0].STATUS,
+              // userLD : list[0].LIGHTDARK
           };
 
           token = jwt.sign(user, JWT_KEY, {expiresIn : '1h'});
@@ -163,6 +164,48 @@ router.get("/:userId", async (req, res)=>{
             + ")C ON U.USERID = C.USERID "
             + "WHERE U.USERID = ? "
     let [list] = await db.query(sql, [userId]);
+
+    res.json({
+      info : list[0],
+      result : "success"
+    })
+  } catch (error) {
+    console.log("에러 발생!");
+    console.log(error);
+  }
+});
+
+router.put("/mode/:userId", async (req, res) => {
+    let {userId} = req.params;
+    let {mode} = req.body;
+    let keyword = "";
+    // console.log(mode);
+    if(mode=="light"){
+      keyword = "L";
+    } else if(mode=="dark"){
+      keyword = "D";
+    }
+    try {
+        let sql = "UPDATE SNS_USER SET "
+                + "LIGHTDARK = ? "
+                + "WHERE USERID = ? "
+        let result = await db.query(sql, [keyword, userId])
+
+        res.json({
+            result : result,
+            msg : "수정되었습니다."
+        })
+    } catch (error) {
+       console.log("에러 발생!");
+    }
+})
+
+router.get("/ld/:id", async (req, res)=>{
+  let {id} = req.params;
+  
+  try {
+    let sql = "SELECT * FROM SNS_USER WHERE USERID = ?"
+    let [list] = await db.query(sql, [id]);
 
     res.json({
       info : list[0],

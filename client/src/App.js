@@ -15,6 +15,8 @@ import Main from './components/MainPage';
 import Setting from './components/Setting';
 import Notice from './components/Notice';
 
+import ChatRoom from './components/chat/ChatRoom';
+
 import { getTheme } from './theme';
 import { ThemeModeProvider, ThemeModeContext } from './components/context/ThemeContext';
 
@@ -56,6 +58,7 @@ function AppContent() {
             <Route path="/main" element={<Main />} />
             <Route path="/setting" element={<Setting />} />
             <Route path="/notice" element={<Notice />} />
+            <Route path="/chatroom" element={<ChatRoom />} />
           </Routes>
         </Box>
         {(!isAuthPage && !withoutSet && !withoutSearch) && <RightBar />}

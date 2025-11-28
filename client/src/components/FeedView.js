@@ -49,6 +49,7 @@ function FeedView() {
             .then( res => res.json() )
             .then( data => {
                 setCommentList(data.list);
+        console.log(commentList);
             })
     }
 
@@ -147,11 +148,23 @@ function FeedView() {
                 <Box textAlign="right">
                     {info.USERID === loginUser ? (
                         <>
-                            <Button size="small">수정</Button>
-                            <Button size="small" variant="outlined" color="error">삭제</Button>
+                            <Button size="small"
+                                onClick={()=>{
+                                    alert("게시글 수정!");
+                                }}
+                            >수정</Button>
+                            <Button size="small" variant="outlined" color="error"
+                                onClick={()=>{
+                                    alert("게시글 삭제!");
+                                }}
+                            >삭제</Button>
                         </>
                     ) : (
-                        <Button size="small" color="error">신고</Button>
+                        <Button size="small" color="error"
+                            onClick={()=>{
+                                alert("게시글 신고!");
+                            }}
+                        >신고</Button>
                     )}
                 </Box>
             </Stack>
@@ -167,123 +180,161 @@ function FeedView() {
             <Box>
                 {parentComments.map((item) => (
                     <React.Fragment key={item.COMMENTNO}>
-                        {/* 부모 댓글 */}
-                        <Box
-                            sx={{
-                                p: "10px",
-                                border: "1px solid lightgray",
-                                borderRadius: 3,
-                                mt: "10px",
-                                mb: "10px"
-                            }}
-                            onClick={() => {
-                                setOpenReplyBox(prev =>
-                                    prev === item.COMMENTNO ? null : item.COMMENTNO
-                                )
-                            }}
-                        >
-                            <Stack direction="row" spacing={2} alignItems="flex-start">
-                                <Avatar src={item.IMGPATH} />
-                                <Stack direction="column" sx={{ width: "100%" }}>
-                                {/* 닉네임과 날짜를 한 행에 */}
-                                <Stack direction="row" justifyContent="space-between">
-                                    <Typography variant="subtitle2" fontWeight="bold">
-                                        {item.NICKNAME}
-                                    </Typography>
-                                    <Box sx={{ color: "gray", fontSize: "0.9rem" }}>
-                                    {item.CDATETIME === item.UDATETIME
-                                        ? item.CTIME
-                                        : item.UTIME + " (수정됨)"}
-                                    </Box>
-                                </Stack>
+                    {/* 부모 댓글 */}
+                    <Box
+                        sx={{
+                        p: "10px",
+                        border: "1px solid lightgray",
+                        borderRadius: 3,
+                        mt: "10px",
+                        mb: "10px"
+                        }}
+                        onClick={() => {
+                        setOpenReplyBox(prev =>
+                            prev === item.COMMENTNO ? null : item.COMMENTNO
+                        )
+                        }}
+                    >
+                        <Stack direction="row" spacing={2} alignItems="flex-start">
+                        {/* Avatar 숨기기 */}
+                        {item.ISDELETED !== 'T' && <Avatar src={item.IMGPATH} />}
 
-                                    <Box sx={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
-                                        <Typography variant="body2" color="text.secondary">
-                                            @{item.USERID}
-                                        </Typography>
-                                        {/* 버튼들을 날짜 아래에 */}
-                                        <Box sx={{  }} textAlign={"right"}>
-                                            {item.USERID === loginUser ? (
-                                            <>
-                                                <Button size="small">수정</Button>
-                                                <Button size="small" color='error' variant='outlined'>삭제</Button>
-                                            </>
-                                            ) : (
-                                            <Button size="small" color='secondary'>신고</Button>
-                                            )}
-                                        </Box>
-                                    </Box>
-                                </Stack>
+                        <Stack direction="column" sx={{ width: "100%" }}>
+                            {/* 닉네임과 날짜 한 줄 */}
+                            <Stack direction="row" justifyContent="space-between">
+                            <Typography variant="subtitle2" fontWeight="bold">
+                                {item.ISDELETED === 'T' ? "삭제된 댓글입니다." : item.NICKNAME}
+                            </Typography>
+                            <Box sx={{ color: "gray", fontSize: "0.9rem" }}>
+                                {item.ISDELETED === 'T'
+                                ? ""
+                                : item.CDATETIME === item.UDATETIME
+                                    ? item.CTIME
+                                    : item.UTIME + " (수정됨)"}
+                            </Box>
                             </Stack>
-                            <Box sx={{ m: 1 }}>{item.CONTENTS}</Box>
+
+                            {/* 유저 정보 + 버튼 */}
+                            {item.ISDELETED !== 'T' && (
+                            <Box sx={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                                <Typography variant="body2" color="text.secondary">
+                                @{item.USERID}
+                                </Typography>
+                                <Box textAlign={"right"}>
+                                {item.USERID === loginUser ? (
+                                    <>
+                                    <Button size="small"
+                                        onClick={()=>{
+                                            alert("댓글 수정!");
+                                        }}
+                                    >수정</Button>
+                                    <Button size="small" color='error' variant='outlined'
+                                        onClick={()=>{
+                                            alert("댓글 삭제!");
+                                        }}
+                                    >삭제</Button>
+                                    </>
+                                ) : (
+                                    <Button size="small" color='error'
+                                        onClick={()=>{
+                                            alert("댓글 신고!");
+                                        }}
+                                    >신고</Button>
+                                )}
+                                </Box>
+                            </Box>
+                            )}
+                        </Stack>
+                        </Stack>
+
+                        {/* 댓글 내용 */}
+                        <Box sx={{ m: 1 }}>
+                        {item.ISDELETED === 'T' ? "" : item.CONTENTS}
                         </Box>
+                    </Box>
 
-                        {/* 대댓글 렌더링 */}
-                        {getReplies(item.COMMENTNO).map(replyItem => (
+                    {/* 대댓글 렌더링 */}
+                    {getReplies(item.COMMENTNO).map(replyItem => (
                         <Box
-                            key={replyItem.COMMENTNO}
-                            sx={{ ml: 5, mb: 2, borderLeft: "2px solid #ddd", pl: 2 }}
+                        key={replyItem.COMMENTNO}
+                        sx={{ ml: 5, mb: 2, borderLeft: "2px solid #ddd", pl: 2 }}
                         >
-                            <Stack direction="row" spacing={2} alignItems="flex-start">
-                            {/* Avatar */}
-                            <Avatar src={replyItem.IMGPATH} />
+                        <Stack direction="row" spacing={2} alignItems="flex-start">
+                            {/* Avatar 숨기기 */}
+                            {replyItem.ISDELETED !== 'T' && <Avatar src={replyItem.IMGPATH} />}
 
-                            {/* 닉네임 + 날짜 + 버튼들을 세로로 쌓기 */}
                             <Stack direction="column" sx={{ width: "100%" }}>
-                                {/* 닉네임과 날짜 한 줄 */}
-                                <Stack direction="row" justifyContent="space-between">
-                                <Box>{replyItem.NICKNAME}</Box>
+                            <Stack direction="row" justifyContent="space-between">
+                                <Box>
+                                {replyItem.ISDELETED === 'T' ? "삭제된 댓글입니다." : replyItem.NICKNAME}
+                                </Box>
                                 <Box sx={{ color: "gray", fontSize: "0.9rem" }}>
-                                    {replyItem.CDATETIME === replyItem.UDATETIME
+                                {replyItem.ISDELETED === 'T'
+                                    ? ""
+                                    : replyItem.CDATETIME === replyItem.UDATETIME
                                     ? replyItem.CTIME
                                     : replyItem.UTIME + " (수정됨)"}
                                 </Box>
-                                </Stack>
+                            </Stack>
 
-                                <Box sx={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
-                                    <Typography variant="body2" color="text.secondary">
-                                        @{replyItem.USERID}
-                                    </Typography>
-                                    {/* 버튼들을 날짜 아래에 */}
-                                    <Box sx={{  }} textAlign={"right"}>
-                                        {replyItem.USERID === loginUser ? (
-                                            <>
-                                            <Button size="small">수정</Button>
-                                            <Button size="small" color='error' variant='outlined'>삭제</Button>
-                                            </>
-                                        ) : (
-                                            <Button size="small" color='secondary'>신고</Button>
-                                        )}
-                                    </Box>
+                            {replyItem.ISDELETED !== 'T' && (
+                                <Box sx={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                                <Typography variant="body2" color="text.secondary">
+                                    @{replyItem.USERID}
+                                </Typography>
+                                <Box textAlign="right">
+                                    {replyItem.USERID === loginUser ? (
+                                    <>
+                                        <Button size="small"
+                                            onClick={()=>{
+                                            alert("대댓글 수정!");
+                                        }}
+                                        >수정</Button>
+                                        <Button size="small" color='error' variant='outlined'
+                                            onClick={()=>{
+                                            alert("대댓글 삭제!");
+                                        }}
+                                        >삭제</Button>
+                                    </>
+                                    ) : (
+                                    <Button size="small" color='error'
+                                        onClick={()=>{
+                                            alert("대댓글 신고!");
+                                        }}
+                                    >신고</Button>
+                                    )}
                                 </Box>
+                                </Box>
+                            )}
                             </Stack>
-                            </Stack>
+                        </Stack>
 
-                            {/* 댓글 내용 */}
-                            <Box sx={{ m: 1 }}>{replyItem.CONTENTS}</Box>
+                        {/* 댓글 내용 */}
+                        <Box sx={{ m: 1 }}>
+                            {replyItem.ISDELETED === 'T' ? "" : replyItem.CONTENTS}
                         </Box>
-                        ))}
+                        </Box>
+                    ))}
 
-
-                        {/* 대댓글 입력창 */}
-                        {openReplyBox === item.COMMENTNO && (
-                            <Box sx={{ ml: 5, mb: 2, position: "relative" }}>
-                                <SubdirectoryArrowRightIcon
-                                    sx={{ position: "absolute", left: 0, top: 12, color: "#26e6ffff" }}
-                                    fontSize="medium"
-                                />
-                                <TextField
-                                    fullWidth
-                                    multiline
-                                    minRows={2}
-                                    sx={{ pl: 4 }}
-                                    onChange={(e)=> setReply(e.target.value)}
-                                />
-                                <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
-                                    <Button variant="contained" onClick={()=> addReply(item.COMMENTNO)}>등록</Button>
-                                </Box>
-                            </Box>
-                        )}
+                    {/* 대댓글 입력창 */}
+                    {openReplyBox === item.COMMENTNO && item.ISDELETED !== 'T' && (
+                        <Box sx={{ ml: 5, mb: 2, position: "relative" }}>
+                        <SubdirectoryArrowRightIcon
+                            sx={{ position: "absolute", left: 0, top: 12, color: "#26e6ffff" }}
+                            fontSize="medium"
+                        />
+                        <TextField
+                            fullWidth
+                            multiline
+                            minRows={2}
+                            sx={{ pl: 4 }}
+                            onChange={(e)=> setReply(e.target.value)}
+                        />
+                        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+                            <Button variant="contained" onClick={()=> addReply(item.COMMENTNO)}>등록</Button>
+                        </Box>
+                        </Box>
+                    )}
                     </React.Fragment>
                 ))}
             </Box>

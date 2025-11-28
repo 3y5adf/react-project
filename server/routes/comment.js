@@ -84,7 +84,7 @@ router.post("/add", async (req, res)=>{
   try {
     // let hashPwd = await bcrypt.hash(pwd, 10);
 
-    let sql = "INSERT INTO SNS_COMMENT VALUES(NULL, ?, ?, ?, NOW(), NOW(), NULL)"
+    let sql = "INSERT INTO SNS_COMMENT VALUES(NULL, ?, ?, ?, NOW(), NOW(), NULL, 'F')"
     let result = await db.query(sql, [loginUser, feedId, comment]);
 
     res.json({
@@ -103,7 +103,7 @@ router.post("/reply/add", async (req, res)=>{
   try {
     // let hashPwd = await bcrypt.hash(pwd, 10);
 
-    let sql = "INSERT INTO SNS_COMMENT VALUES(NULL, ?, ?, ?, NOW(), NOW(), ?)"
+    let sql = "INSERT INTO SNS_COMMENT VALUES(NULL, ?, ?, ?, NOW(), NOW(), ?, 'F')"
     let result = await db.query(sql, [loginUser, feedId, reply, parentNo]);
 
     res.json({

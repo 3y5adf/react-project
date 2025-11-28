@@ -1,11 +1,13 @@
 // Setting.js
 import React from 'react';
-import { Drawer, List, ListItem, ListItemText, Typography, Toolbar, ListItemIcon, Box } from '@mui/material';
+import { Drawer, List, ListItem, ListItemText, Typography, Toolbar, ListItemIcon, Box, ListItemButton } from '@mui/material';
 import { Home, Add, AccountCircle } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ThemeToggleButton from './ThemeToggle';
 
 export default function Setting() {
+  let navigate = useNavigate();
+
   return (
       <Box sx={{ overflow: 'auto' }}>
         <List>
@@ -15,25 +17,26 @@ export default function Setting() {
             <ThemeToggleButton />
           </ListItem>
           <hr></hr>
-          <ListItem>
+          <ListItemButton>
             비밀번호 수정
-            
-          </ListItem>
+          </ListItemButton>
           <hr></hr>
-          <ListItem>
+          <ListItemButton>
             변경권 구매
-            
-          </ListItem>
+          </ListItemButton>
           <hr></hr>
-          <ListItem>
+          <ListItemButton
+            onClick={()=>{
+              localStorage.removeItem("token");
+              navigate("/");
+            }}
+          >
             로그아웃
-            
-          </ListItem>
+          </ListItemButton>
           <hr></hr>
-          <ListItem>
+          <ListItemButton>
             회원탈퇴
-            
-          </ListItem>
+          </ListItemButton>
         </List>
       </Box>
   );

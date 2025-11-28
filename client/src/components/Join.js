@@ -25,7 +25,7 @@ function Join() {
   let [nickFlg, setNickFlg] = useState(false);
   let [pwdFlg, setPwdFlg] = useState(false);
 
-  let [domain, setDomain] = useState("");
+  let [domain, setDomain] = useState("naver.com");
 
   let [openProfile, setOpenProfile] = useState(false);
 
@@ -49,6 +49,10 @@ function Join() {
       setPwdFlg(false);
     }
   },[pwd,pwdRe])
+
+  useEffect(()=>{
+    idRef.current.focus();
+  },[])
 
   function onJoin(){
     if(id.length==0){
@@ -160,7 +164,7 @@ function Join() {
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
-        minHeight="100vh"
+        minHeight="90vh"
       >
         
 
@@ -185,19 +189,28 @@ function Join() {
           onClick={()=>{
             idCheck();
           }}
+          variant='outlined'
+          sx={{mb:2}}
         >
           중복체크
         </Button>
         )}
 
-        <Box>
+        <Box
+          sx={{
+            display:"flex",
+            alignItems:"center",
+            gap:1
+          }}
+        >
           <TextField
             inputRef={emailRef}
             label="Email"
             variant="outlined"
             margin="normal"
+            sx={{width:180}}
           />
-          @
+          <h3>@</h3>
           <FormControl 
             variant="outlined"
             margin="normal"
@@ -213,9 +226,10 @@ function Join() {
               value={domain}
               label="도메인"
               onChange={handleChange}
+              sx={{minWidth:180}}
             >
-              <MenuItem value={"gmail.com"}>gmail.com</MenuItem>
               <MenuItem value={"naver.com"}>naver.com</MenuItem>
+              <MenuItem value={"gmail.com"}>gmail.com</MenuItem>
               {/* <MenuItem></MenuItem>
               <MenuItem></MenuItem>
               <MenuItem></MenuItem> */}
@@ -235,8 +249,11 @@ function Join() {
           setEmail(newEmail)
           //임시
           setEmailFlg(true)
-        }}>
-          인증
+        }}
+          variant='outlined'
+          sx={{mb:2}}
+        >
+          인증하기
         </Button>
 
         <TextField 
@@ -249,19 +266,27 @@ function Join() {
             setNickname(e.target.value);
           }}
         />
-        <div style={{ fontSize: "12px" }}>
-          한번 설정하면 바꿀 수 없으니, 신중히 해주세요.
-        </div>
-        <Button onClick={()=>{
-          if(nickname==""){
-            alert("닉네임을 입력해주세요.");
-            return;
-          }
-          // alert(nickname);
-          nicknameCheck();
-        }}>
-          중복체크
-        </Button>
+        <Box sx={{display:"flex", alignItems:"center", justifyContent:"flex-start", mb:3}}>
+          <div style={{ fontSize: "12px", color:"red", fontWeight:"bold" }}>
+            한번 설정하면 바꿀 수 없으니, 신중히 해주세요.
+          </div>
+          <Button 
+            onClick={()=>{
+              if(nickname==""){
+                alert("닉네임을 입력해주세요.");
+                return;
+              }
+              // alert(nickname);
+              nicknameCheck();
+            }}
+              variant="outlined"
+            sx={{
+              ml:2
+            }}
+          >
+            중복체크
+          </Button>
+        </Box>
 
         {/* <Button 
           variant="contained" 
@@ -299,24 +324,26 @@ function Join() {
           )}
         </ProfileImgContext.Provider>
 
-        <TextField
-          inputRef={pwdRef}
-          onChange={(e)=>setPwd(e.target.value)}
-          label="비밀번호"
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          type="password"
-        />
-        <TextField
-          inputRef={pwdReRef}
-          onChange={(e)=>setPwdRe(e.target.value)}
-          label="비밀번호 확인"
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          type="password"
-        />
+        <Box sx={{mt:2}}>
+          <TextField
+            inputRef={pwdRef}
+            onChange={(e)=>setPwd(e.target.value)}
+            label="비밀번호"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            type="password"
+          />
+          <TextField
+            inputRef={pwdReRef}
+            onChange={(e)=>setPwdRe(e.target.value)}
+            label="비밀번호 확인"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            type="password"
+          />
+        </Box>
 
         {/* <div style={{color : confirmColor, fontWeight:"bold"}}>
           {confirmKeyword}
