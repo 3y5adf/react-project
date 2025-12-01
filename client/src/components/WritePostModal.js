@@ -67,8 +67,8 @@ export default function WritePostModal({ open, onClose }) {
     })
       .then( res => res.json() )
       .then( data => {
-          console.log(data);
-          alert("등록되었습니다.");
+          // console.log(data);
+          // alert("등록되었습니다.");
           onClose();
       })  
   }

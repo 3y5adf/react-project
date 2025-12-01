@@ -58,7 +58,7 @@ function AppContent() {
             <Route path="/main" element={<Main />} />
             <Route path="/setting" element={<Setting />} />
             <Route path="/notice" element={<Notice />} />
-            <Route path="/chatroom" element={<ChatRoom />} />
+            <Route path="/chatroom/:chatNo" element={<ChatRoom />} />
           </Routes>
         </Box>
         {(!isAuthPage && !withoutSet && !withoutSearch) && <RightBar />}

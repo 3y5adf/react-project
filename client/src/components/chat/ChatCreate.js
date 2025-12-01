@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Box, TextField, Button } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 
 const ChatCreate = () => {
     const [name, setName] = useState('');
     let [loginUser, setLoginUser] = useState("");   
+    let navigate = useNavigate();
 
     let token = localStorage.getItem("token");
 
@@ -39,6 +41,8 @@ const ChatCreate = () => {
                 // alert("등록되었습니다.");
                 // onClose();
                 roomHostIn(data.result[0].insertId);
+                window.location.href = "/chatroom/"+data.result[0].insertId;
+                // navigate("http://localhost:3020/chatroom/"+data.result[0].insertId);
             })  
     }
 
