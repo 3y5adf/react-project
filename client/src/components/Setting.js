@@ -12,19 +12,22 @@ export default function Setting() {
       <Box sx={{ overflow: 'auto' }}>
         <List>
           {/* Theme Toggle */}
-          <ListItem>
+          {/* <ListItem>
             <ListItemText primary="라이트/다크 모드" />
             <ThemeToggleButton />
           </ListItem>
-          <hr></hr>
-          <ListItemButton>
+          <hr></hr> */}
+
+          {/* <ListItemButton>
             비밀번호 수정
           </ListItemButton>
-          <hr></hr>
-          <ListItemButton>
+          <hr></hr> */}
+
+          {/* <ListItemButton>
             변경권 구매
           </ListItemButton>
-          <hr></hr>
+          <hr></hr> */}
+
           <ListItemButton
             onClick={()=>{
               localStorage.removeItem("token");
@@ -34,7 +37,11 @@ export default function Setting() {
             로그아웃
           </ListItemButton>
           <hr></hr>
-          <ListItemButton>
+          <ListItemButton
+            onClick={()=>{
+              navigate("/quit");
+            }}
+          >
             회원탈퇴
           </ListItemButton>
         </List>

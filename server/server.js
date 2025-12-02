@@ -78,25 +78,78 @@ io.on("connection", (socket) => {
 
     try {
       // DB 저장
-      let sql = "INSERT INTO SNS_CHATROOM_MESSAGE(MSGNO, CHATNO, USERID, CONTENTS, CDATETIME) VALUES(NULL, ?, ?, ?, NOW())";
-      let [result] = await db.query(sql, [chatNo, userId, contents]);
+      let insertSql = "INSERT INTO SNS_CHATROOM_MESSAGE(MSGNO, CHATNO, USERID, CONTENTS, CDATETIME) VALUES(NULL, ?, ?, ?, NOW())";
+      let [result] = await db.query(insertSql, [chatNo, userId, contents]);
 
       // 저장된 메시지 정보
-      const newMessage = {
-        MSGNO: result.insertId,
-        CHATNO: chatNo,
-        USERID: userId,
-        CONTENTS: contents,
-        CDATETIME: new Date()
-      };
+      let selectSql = "SELECT M.*, DATE_FORMAT(M.CDATETIME, '%H:%i') AS CTIME, U.NICKNAME, U.IMGPATH "
+                    + "FROM SNS_CHATROOM_MESSAGE M "
+                    + "INNER JOIN SNS_USER U ON M.USERID = U.USERID "
+                    + "WHERE M.MSGNO = ? "
+    let [[fullMessage]] = await db.query(selectSql, [result.insertId]);
+
+      //발신자의 LASTREAD 자동 업데이트
+      let updateLastRead = "UPDATE SNS_CHATROOM_MEMBER SET "
+                         + "LASTREAD = ? "
+                         + "WHERE USERID = ? AND CHATNO = ? "
+      await db.query(updateLastRead, [result.insertId, userId, chatNo]);
 
       // ⭐ 같은 방에 있는 모든 사람에게 전송 (본인 포함)
-      io.to(chatNo).emit("receiveMessage", newMessage);
+      io.to(chatNo).emit("receiveMessage", fullMessage);
+
+      //해당 채팅방 멤버들에게 읽지 않은 수 업데이트 알림
+      let membersSql = "SELECT USERID "
+                     + "FROM SNS_CHATROOM_MEMBER "
+                     + "WHERE CHATNO = ? AND STATUS = 'JOINED' AND USERID != ? "
+      let [members] = await db.query(membersSql, [chatNo, userId]);
+
+      for(let member of members){
+        let unreadSql = "SELECT COUNT(*) AS CNT "
+                      + "FROM SNS_CHATROOM_MESSAGE M "
+                      + "INNER JOIN SNS_CHATROOM_MEMBER CM ON M.CHATNO = CM.CHATNO "
+                      + "WHERE CM.USERID = ? "
+                      + " AND CM.CHATNO = ? "
+                      + " AND M.MSGNO > IFNULL(CM.LASTREAD, 0) "
+                      + " AND M.USERID != ? "
+
+        let [[unread]] = await db.query(unreadSql, [member.USERID, chatNo, member.USERID]);
+
+        io.emit("unreadUpdate", {
+          userId : member.USERID,
+          chatNo : chatNo, 
+          unreadCount : unread.CNT
+        });
+      }
       
     } catch (error) {
       console.error("메시지 저장 오류:", error);
     }
   });
+
+  // ⭐ 채팅방 입장 시 읽음 처리
+socket.on("markAsRead", async (data) => {
+  const { chatNo, userId } = data;
+  
+  try {
+    let getLastMsg = "SELECT IFNULL(MAX(MSGNO), 0) AS LAST_MSG "
+                   + "FROM SNS_CHATROOM_MESSAGE "
+                   + "WHERE CHATNO = ? "
+    
+    let [[lastMsg]] = await db.query(getLastMsg, [chatNo]);
+    
+    let updateSql = "UPDATE SNS_CHATROOM_MEMBER "
+                  + "SET LASTREAD = ? "
+                  + "WHERE USERID = ? AND CHATNO = ? "
+
+    await db.query(updateSql, [lastMsg.LAST_MSG, userId, chatNo]);
+    
+    // 읽음 처리 완료 알림
+    socket.emit("readComplete", { chatNo: chatNo });
+    
+  } catch (error) {
+    console.error("읽음 처리 오류:", error);
+  }
+});
 
   // 연결 해제
   socket.on("disconnect", () => {

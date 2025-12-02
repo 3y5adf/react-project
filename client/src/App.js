@@ -14,7 +14,7 @@ import RightBar from "./components/RightSidebar";
 import Main from './components/MainPage';
 import Setting from './components/Setting';
 import Notice from './components/Notice';
-
+import Quit from './components/Quit';
 import ChatRoom from './components/chat/ChatRoom';
 
 import { getTheme } from './theme';
@@ -58,6 +58,7 @@ function AppContent() {
             <Route path="/main" element={<Main />} />
             <Route path="/setting" element={<Setting />} />
             <Route path="/notice" element={<Notice />} />
+            <Route path="/quit" element={<Quit />} />
             <Route path="/chatroom/:chatNo" element={<ChatRoom />} />
           </Routes>
         </Box>

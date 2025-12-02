@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { List, ListItem, ListItemText, Box, Stack, Pagination } from '@mui/material';
+import { List, ListItem, ListItemText, Box, Stack, Pagination, Alert } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
+import io from 'socket.io-client';
 
 const ChatList = ({type = "all"}) => {
     let [chatList, setChatList] = useState([]);
     let [loginUser, setLoginUser] = useState("");
+    let [unreadCounts, setUnreadCounts] = useState({});
     let navigate = useNavigate();
     
     // 페이징 관련 state
@@ -18,7 +20,7 @@ const ChatList = ({type = "all"}) => {
         fetch("http://localhost:3020/chatroom/")
             .then( res => res.json() )
             .then( data => {
-                console.log(data);
+                // console.log(data);
                 setChatList(data.list);
             })
     }
@@ -27,7 +29,7 @@ const ChatList = ({type = "all"}) => {
         fetch("http://localhost:3020/chatroom/join-list/"+loginUser)
             .then( res => res.json() )
             .then( data => {
-                console.log(data);
+                // console.log(data);
                 setChatList(data.list);
             })
     }
@@ -44,15 +46,33 @@ const ChatList = ({type = "all"}) => {
             getRoomList();
         } else if(type === "joined" && loginUser){
             getJoinList();
+            getUnreadCounts();
         }
     }, [type, loginUser]);
+
+    useEffect(() => {
+        if (!loginUser) return;
+        
+        const socket = io("http://localhost:3020");
+        
+        socket.on("unreadUpdate", (data) => {
+            if (data.userId === loginUser) {
+                setUnreadCounts(prev => ({
+                    ...prev,
+                    [data.chatNo]: data.unreadCount
+                }));
+            }
+        });
+        
+        return () => socket.disconnect();
+    }, [loginUser]);
 
     function joinRoom(chatNo) {
         let param = {
             user : loginUser,
             chatNo : chatNo
         }
-        console.log(param);
+        // console.log(param);
         fetch("http://localhost:3020/chatroom/join", {
             method:"POST",
             headers : {
@@ -80,11 +100,30 @@ const ChatList = ({type = "all"}) => {
         })
             .then( res => res.json() )
             .then( data => {
-                if(data.check.length>0){
-                    navigate("/chatroom/"+chatNo);
-                } else {
-                    joinRoom(chatNo);
+                // console.log(data.check[0].STATUS);
+                if(data.check[0]?.STATUS==="LEFT"){
+                    //해당 방에서의 상태가 LEFT면 JOINED로 업데이트
+                    fetch("http://localhost:3020/chatroom/lefttojoin/"+chatNo,{
+                        method : "PUT",
+                        headers : {
+                            "Content-type" : "application/json"
+                        },
+                        body : JSON.stringify(param)
+                    })
+                        .then( res => res.json() )
+                        .then( data => {
+                            // alert(data);
+                            // location.href="board-list.html";
+                            navigate("/chatroom/"+chatNo);
+                        } )
+                } else{
+                    if(data.check.length>0){
+                        navigate("/chatroom/"+chatNo);
+                    } else {
+                        joinRoom(chatNo);
+                    }
                 }
+                
             })  
     }
 
@@ -101,6 +140,21 @@ const ChatList = ({type = "all"}) => {
     // 총 페이지 수 계산
     const totalPages = Math.ceil(chatList.length / itemsPerPage);
         
+    //읽지 않은 메세지 수 가져오기
+    function getUnreadCounts() {
+        if (!loginUser) return;
+        
+        fetch(`http://localhost:3020/chatroom/unread-count/${loginUser}`)
+            .then(res => res.json())
+            .then(data => {
+                const counts = {};
+                data.list.forEach(item => {
+                    counts[item.CHATNO] = item.UNREAD_COUNT;
+                });
+                setUnreadCounts(counts);
+            });
+    }
+
     return (
         <>
             <Box>
@@ -124,8 +178,31 @@ const ChatList = ({type = "all"}) => {
                             },
                             bgcolor: "#fafafa",
                             cursor:"pointer",
+                            position: "relative"
                         }}
                     >
+                        {unreadCounts[item.CHATNO] > 0 && (
+                            <Box
+                                sx={{
+                                    position: "absolute",
+                                    top: 10,
+                                    right: 10,
+                                    bgcolor: "#ff5252",
+                                    color: "white",
+                                    borderRadius: "50%",
+                                    width: 24,
+                                    height: 24,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontSize: "0.75rem",
+                                    fontWeight: "bold"
+                                }}
+                            >
+                                {unreadCounts[item.CHATNO]}
+                            </Box>
+                        )}
+
                         {/* CHATNO */}
                         <Box sx={{ ml: 3, mr: 4, fontWeight: "bold", fontSize: "1.2rem", color: "#1976d2" }}>
                             {item.CHATNO}

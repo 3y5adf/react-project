@@ -50,9 +50,11 @@ router.get("/", async (req, res) => {
             + "LEFT JOIN( "
             + " SELECT CHATNO, COUNT(*) AS CNT "
             + " FROM SNS_CHATROOM_MEMBER "
+            + " WHERE STATUS = 'JOINED' "
             + " GROUP BY CHATNO "
             + ")M ON C.CHATNO = M.CHATNO "
-            + "ORDER BY CDATETIME DESC"
+            + "WHERE CNT > 0 "
+            + "ORDER BY CDATETIME DESC "
     let [list] = await db.query(sql);
 
     res.json({
@@ -65,11 +67,11 @@ router.get("/", async (req, res) => {
   }
 });
 
-//채팅방 멤버 목록
+//참여중인 채팅방 목록
 router.get("/join-list/:user", async (req, res) => {
     let {user} = req.params;
   try {
-    let sql = "SELECT C.*, M.USERID AS USER, CNT "
+    let sql = "SELECT C.*, M.USERID AS USER, CNT, LASTCHAT "
             + "FROM SNS_CHATROOM C "
             + "INNER JOIN( "
             + " SELECT * "
@@ -80,7 +82,13 @@ router.get("/join-list/:user", async (req, res) => {
             + " FROM SNS_CHATROOM_MEMBER "
             + " GROUP BY CHATNO "
             + ")T ON C.CHATNO = T.CHATNO "
-            + "WHERE M.USERID = ?"
+            + "LEFT JOIN( "
+            + " SELECT CHATNO, MAX(CDATETIME) AS LASTCHAT "
+            + " FROM SNS_CHATROOM_MESSAGE "
+            + " GROUP BY CHATNO "
+            + ")MS ON C.CHATNO = MS.CHATNO "
+            + "WHERE M.USERID = ? AND STATUS = 'JOINED' "
+            + "ORDER BY LASTCHAT DESC"
     let [list] = await db.query(sql,[user]);
 
     res.json({
@@ -181,15 +189,11 @@ router.get("/getTitle/:chatNo", async (req, res) => {
 router.get("/message/get/:chatNo", async (req, res) => {
   let {chatNo} = req.params;
   try {
-    let sql = "SELECT M.*, DATE_FORMAT(CDATETIME, '%H:%i') AS CTIME "
+    let sql = "SELECT M.*, DATE_FORMAT(M.CDATETIME, '%H:%i') AS CTIME, NICKNAME, IMGPATH "
             + "FROM SNS_CHATROOM_MESSAGE M "
+            + "INNER JOIN SNS_USER U ON M.USERID = U.USERID "
             + "WHERE CHATNO = ? "
-            // + "LEFT JOIN( "
-            // + " SELECT CHATNO, COUNT(*) AS CNT "
-            // + " FROM SNS_CHATROOM_MEMBER "
-            // + " GROUP BY CHATNO "
-            // + ")M ON C.CHATNO = M.CHATNO "
-            // + "ORDER BY CDATETIME DESC"
+            + "ORDER BY M.MSGNO ASC "
     let [list] = await db.query(sql, [chatNo]);
 
     res.json({
@@ -206,9 +210,10 @@ router.get("/message/get/:chatNo", async (req, res) => {
 router.get("/members/:chatNo", async (req, res) => {
   let { chatNo } = req.params;
   try {
-    let sql = "SELECT USERID, ROLE, STATUS, JOINTIME "
-            + "FROM SNS_CHATROOM_MEMBER "
-            + "WHERE CHATNO = ? AND STATUS = 'JOINED' "
+    let sql = "SELECT M.USERID, ROLE, M.STATUS, JOINTIME, NICKNAME, IMGPATH "
+            + "FROM SNS_CHATROOM_MEMBER M "
+            + "INNER JOIN SNS_USER U ON M.USERID = U.USERID "
+            + "WHERE CHATNO = ? AND M.STATUS = 'JOINED' "
             + "ORDER BY ROLE DESC, JOINTIME ASC";
     let [list] = await db.query(sql, [chatNo]);
 
@@ -228,13 +233,54 @@ router.post("/leave", async (req, res) => {
   const { user, chatNo } = req.body;
   
   try {
-    let sql = "UPDATE SNS_CHATROOM_MEMBER SET STATUS = 'LEFT' WHERE CHATNO = ? AND USERID = ?";
+    let checkRole = "SELECT ROLE FROM SNS_CHATROOM_MEMBER WHERE CHATNO = ? AND USERID = ? AND STATUS = 'JOINED'";
+    let [roleResult] = await db.query(checkRole, [chatNo, user]);
+
+    const isOwner = roleResult.length > 0 && roleResult[0].ROLE === 'OWNER';
+
+    let sql = "UPDATE SNS_CHATROOM_MEMBER SET "
+            + "STATUS = 'LEFT', "
+            + "ROLE = 'MEMBER' "
+            + "WHERE CHATNO = ? AND USERID = ?";
     let result = await db.query(sql, [chatNo, user]);
+
+    if(isOwner){
+      let nextOwnerSql = "SELECT * "
+                       + "FROM SNS_CHATROOM_MEMBER "
+                       + "WHERE CHATNO = ? AND STATUS = 'JOINED' "
+                       + "ORDER BY JOINTIME ASC "
+                       + "LIMIT 1 "
+      let [nextOwner] = await db.query(nextOwnerSql, [chatNo]);
+
+      if(nextOwner.length>0){
+        let transferSql = "UPDATE SNS_CHATROOM_MEMBER SET "
+                        + "ROLE = 'OWNER' "
+                        + "WHERE CHATNO = ? AND USERID = ? "
+        let transferResult = await db.query(transferSql, [chatNo, nextOwner[0].USERID]);
+
+        res.json({
+          result : "success",
+          ownerTransferred : true,
+          newOwner : nextOwner[0].USERID
+        });
+      } else {
+        res.json({ 
+          result: "success",
+          ownerTransferred: false,
+          roomEmpty: true
+        });
+      }
+    } else {
+      res.json({ 
+        result: "success",
+        ownerTransferred: false
+      });
+    }
     
-    res.json({ 
-      result: "success",
-      data: result
-    });
+    // res.json({ 
+    //   result: "success",
+    //   data: result
+    // });
   } catch (error) {
     console.log("에러 발생!");
     console.log(error);
@@ -242,7 +288,7 @@ router.post("/leave", async (req, res) => {
   }
 });
 
-//방 인원 체크
+//방에 참여중인 인원 체크
 router.get("/checkmember/:chatNo", async (req,res) => {
   let {chatNo} = req.params;
   
@@ -250,11 +296,11 @@ router.get("/checkmember/:chatNo", async (req,res) => {
     let sql = "SELECT * "
             + "FROM SNS_CHATROOM_MEMBER "
             + "WHERE CHATNO = ? AND STATUS = 'JOINED'"
-    let result = await db.query(sql, [chatNo]);
+    let list = await db.query(sql, [chatNo]);
 
     res.json({
       result : "success",
-      list : result
+      membercount : list[0]
     })
   } catch (error) {
     console.log("에러 발생!");
@@ -281,6 +327,128 @@ router.delete("/removeroom/:chatNo", async (req,res) => {
 })
 
 //status가 left였는데, 다시 들어가게 되면 joined로 바뀌는 쿼리 넣기
+router.put("/lefttojoin/:chatNo", async (req, res) => {
+    let {chatNo} = req.params;
+    let {user} = req.body;
+    console.log(chatNo);
+    console.log(user);
+    try {
+        let sql = "UPDATE SNS_CHATROOM_MEMBER SET "
+                + "STATUS = 'JOINED' "
+                + "WHERE CHATNO = ? AND USERID = ?"
+        let result = await db.query(sql, [chatNo, user])
+
+        res.json({
+            result : result,
+            msg : "left to join 성공"
+        })
+    } catch (error) {
+       console.log("에러 발생!");
+       console.log(error);
+    }
+})
+
+//안읽은 메세지 수량 조회(참여중인 방)
+router.get("/unread-count/:userId", async(req, res)=>{
+  let{userId}= req.params;
+
+  try {
+    let sql = "SELECT CM.CHATNO, C.TITLE, COUNT(M.MSGNO) AS UNREAD_COUNT "
+            + "FROM SNS_CHATROOM_MEMBER CM "
+            + "INNER JOIN SNS_CHATROOM C ON CM.CHATNO = C.CHATNO "
+            + "LEFT JOIN SNS_CHATROOM_MESSAGE M "
+            + " ON M.CHATNO = CM.CHATNO "
+            + " AND M.MSGNO > IFNULL(CM.LASTREAD, 0) "
+            + " AND M.USERID != CM.USERID "
+            + "WHERE CM.USERID = ? AND CM.STATUS = 'JOINED' "
+            + "GROUP BY CM.CHATNO, C.TITLE "
+
+    let [list] = await db.query(sql, [userId]);
+
+    res.json({
+      result: "success",
+      list: list
+    });
+  } catch (error) {
+    console.log("에러 발생!");
+    console.log(error);
+  }
+})
+
+//채팅방 입장 시, 읽음 처리
+router.post("/mark-read", async(req, res)=>{
+  let {userId, chatNo } = req.body;
+
+  try {
+    let getLastMsgSql = "SELECT IFNULL(MAX(MSGNO), 0) AS LAST_MSG "
+                      + "FROM SNS_CHATROOM_MESSAGE "
+                      + "WHERE CHATNO = ?"
+    let [[lastMsg]] = await db.query(getLastMsgSql, [chatNo]);
+
+    let lastMsgUpdateSql = "UPDATE SNS_CHATROOM_MEMBER SET "
+                         + "LASTREAD = ? "
+                         + "WHERE USERID = ? AND CHATNO = ? "
+    let updateResult = await db.query(lastMsgUpdateSql, [lastMsg.LAST_MSG, userId, chatNo]);
+    
+    res.json({
+      result : "success",
+      lastRead: lastMsg.LAST_MSG
+    });
+  } catch (error) {
+    console.log("에러 발생!");
+    console.log(error);
+  }
+})
+
+// 특정 채팅방의 읽지 않은 메시지 수
+router.get("/unread/:userId/:chatNo", async (req, res) => {
+  let { userId, chatNo } = req.params;
+  
+  try {
+    let sql = "SELECT COUNT(*) AS UNREAD_COUNT "
+            + "FROM SNS_CHATROOM_MESSAGE M "
+            + "INNER JOIN SNS_CHATROOM_MEMBER CM "
+            + "ON M.CHATNO = CM.CHATNO "
+            + "WHERE CM.USERID = ? "
+            + "AND CM.CHATNO = ? "
+            + "AND M.MSGNO > IFNULL(CM.LASTREAD, 0) "
+            + "AND M.USERID != ? "
+    
+    
+    let [[result]] = await db.query(sql, [userId, chatNo, userId]);
+    
+    res.json({
+      result: "success",
+      unreadCount: result.UNREAD_COUNT
+    });
+  } catch (error) {
+      console.log("에러 발생!");
+      console.log(error);
+  }
+});
+
+// 마지막 읽은 메시지 번호 조회
+router.get("/lastread/:userId/:chatNo", async (req, res) => {
+  let { userId, chatNo } = req.params;
+  
+  try {
+    let sql = `
+      SELECT LASTREAD
+      FROM SNS_CHATROOM_MEMBER
+      WHERE USERID = ? AND CHATNO = ?
+    `;
+    
+    let [[result]] = await db.query(sql, [userId, chatNo]);
+    
+    res.json({
+      result: "success",
+      lastRead: result?.LASTREAD || 0
+    });
+  } catch (error) {
+    console.log("마지막 읽은 메시지 조회 에러:", error);
+    res.status(500).json({ result: "error" });
+  }
+});
 
 
 //------------------안쓰는 코드----------------------------------

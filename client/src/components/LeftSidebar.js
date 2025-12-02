@@ -9,6 +9,7 @@ import ArticleIcon from "@mui/icons-material/Article";
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AddIcon from "@mui/icons-material/Add";
+import ChatBubbleIcon from "@mui/icons-material/ChatBubble";
 
 import WritePostModal from "../components/WritePostModal";
 import Notice, { notificationsData } from "../components/Notice";
@@ -44,21 +45,21 @@ export default function LeftSidebar() {
 
       <List>
         <ListItemButton onClick={() => navigate("/main")}>
-          <ListItemIcon><HomeIcon /></ListItemIcon>
-          {!isSmall && <ListItemText primary="홈" />}
+          <ListItemIcon><ChatBubbleIcon  /></ListItemIcon>
+          {!isSmall && <ListItemText primary="채팅" />}
         </ListItemButton>
 
-        <ListItemButton onClick={() => navigate("/search")}>
+        {/* <ListItemButton onClick={() => navigate("/search")}>
           <ListItemIcon><SearchIcon /></ListItemIcon>
           {!isSmall && <ListItemText primary="검색" />}
-        </ListItemButton>
+        </ListItemButton> */}
 
         <ListItemButton onClick={() => navigate("/feed")}>
           <ListItemIcon><ArticleIcon /></ListItemIcon>
           {!isSmall && <ListItemText primary="게시판" />}
         </ListItemButton>
 
-        <List>
+        {/* <List>
           <ListItemButton onClick={handleNoticeClick}>
             <ListItemIcon>
               <Badge
@@ -71,14 +72,13 @@ export default function LeftSidebar() {
             {!isSmall && <ListItemText primary="알림" />}
           </ListItemButton>
 
-          {/* Popover */}
           <Notice anchorEl={anchorEl} onClose={handleNoticeClose} />
-        </List>
+        </List> */}
 
-        <ListItemButton onClick={() => navigate("/message")}>
+        {/* <ListItemButton onClick={() => navigate("/message")}>
           <ListItemIcon><MailIcon /></ListItemIcon>
           {!isSmall && <ListItemText primary="쪽지" />}
-        </ListItemButton>
+        </ListItemButton> */}
 
         <ListItemButton onClick={() => navigate("/profile")}>
           <ListItemIcon><PersonIcon /></ListItemIcon>

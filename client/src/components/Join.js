@@ -130,17 +130,17 @@ function Join() {
   };
 
   //이메일 되는지 확인용
-  // useEffect(()=>{
-  //   if(email){
-  //     alert(email);
-  //     //추후 이메일 인증
-  //     setEmailFlg(true);
-  //     console.log("ㅇㅇ");
-  //   } else{
-  //     setEmailFlg(false);
-  //     console.log("ㄴㄴ");
-  //   }
-  // }, [email])
+  useEffect(()=>{
+    if(email){
+      alert(email);
+      //추후 이메일 인증 추가해야함
+      setEmailFlg(true);
+      console.log("ㅇㅇ");
+    } else{
+      setEmailFlg(false);
+      console.log("ㄴㄴ");
+    }
+  }, [email])
 
   function nicknameCheck(){
     fetch("http://localhost:3020/user/nickname/"+nickname)
@@ -209,6 +209,7 @@ function Join() {
             variant="outlined"
             margin="normal"
             sx={{width:180}}
+            disabled={emailFlg}
           />
           <h3>@</h3>
           <FormControl 
@@ -227,6 +228,7 @@ function Join() {
               label="도메인"
               onChange={handleChange}
               sx={{minWidth:180}}
+              disabled={emailFlg}
             >
               <MenuItem value={"naver.com"}>naver.com</MenuItem>
               <MenuItem value={"gmail.com"}>gmail.com</MenuItem>
@@ -239,22 +241,25 @@ function Join() {
         </Box>
 
         {/* 추후 이메일 인증 추가하기 */}
-        <Button onClick={()=>{
-          // console.log(emailRef.current.value);
-          if(emailRef.current.value.length==0 || domain==""){
-            alert("이메일을 입력해주세요.");
-            return;
-          }
-          let newEmail = emailRef.current.value+"@"+domain;
-          setEmail(newEmail)
-          //임시
-          setEmailFlg(true)
-        }}
-          variant='outlined'
-          sx={{mb:2}}
-        >
-          인증하기
-        </Button>
+        {!emailFlg && (
+          <Button onClick={()=>{
+            // console.log(emailRef.current.value);
+            if(emailRef.current.value.length==0 || domain==""){
+              alert("이메일을 입력해주세요.");
+              return;
+            }
+            let newEmail = emailRef.current.value+"@"+domain;
+            setEmail(newEmail)
+            //임시
+            setEmailFlg(true)
+          }}
+            variant='outlined'
+            sx={{mb:2}}
+          >
+            {/* 인증하기 */}
+            확인
+          </Button>
+        )}
 
         <TextField 
           // inputRef={emailRef}
@@ -265,28 +270,31 @@ function Join() {
           onChange={(e)=>{
             setNickname(e.target.value);
           }}
+          disabled={nickFlg}
         />
-        <Box sx={{display:"flex", alignItems:"center", justifyContent:"flex-start", mb:3}}>
-          <div style={{ fontSize: "12px", color:"red", fontWeight:"bold" }}>
-            한번 설정하면 바꿀 수 없으니, 신중히 해주세요.
-          </div>
-          <Button 
-            onClick={()=>{
-              if(nickname==""){
-                alert("닉네임을 입력해주세요.");
-                return;
-              }
-              // alert(nickname);
-              nicknameCheck();
-            }}
-              variant="outlined"
-            sx={{
-              ml:2
-            }}
-          >
-            중복체크
-          </Button>
-        </Box>
+        {!nickFlg && (
+          <Box sx={{display:"flex", alignItems:"center", justifyContent:"flex-start", mb:3}}>
+            <div style={{ fontSize: "12px", color:"red", fontWeight:"bold" }}>
+              한번 설정하면 바꿀 수 없으니, 신중히 해주세요.
+            </div>
+            <Button 
+              onClick={()=>{
+                if(nickname==""){
+                  alert("닉네임을 입력해주세요.");
+                  return;
+                }
+                // alert(nickname);
+                nicknameCheck();
+              }}
+                variant="outlined"
+              sx={{
+                ml:2
+              }}
+            >
+              중복체크
+            </Button>
+          </Box>
+        )}
 
         {/* <Button 
           variant="contained" 

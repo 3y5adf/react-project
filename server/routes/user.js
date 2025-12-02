@@ -217,4 +217,60 @@ router.get("/ld/:id", async (req, res)=>{
   }
 });
 
+//회원탈퇴
+router.delete("/:userId", async (req, res) => {
+    let {userId} = req.params;
+    let {pwd, email} = req.body;
+    // console.log(userId);
+    // console.log(pwd);
+    // console.log(email);
+
+    let result = "fail";
+    let msg = "";
+
+    try {
+        let emailCheckSql = "SELECT * "
+                          + "FROM SNS_USER "
+                          + "WHERE USERID = ? AND EMAIL = ? "
+        let [emailResult] = await db.query(emailCheckSql, [userId, email])
+
+        if(emailResult.length>0){
+          console.log("이메일 통과")
+          let sql = "SELECT * FROM SNS_USER WHERE USERID = ?"
+          let [list] = await db.query(sql, [userId]);
+          let match = await bcrypt.compare(pwd, list[0].PASSWORD);
+          if(match){
+            // msg = "비밀번호 맞음"
+            let quitSql = "DELETE FROM SNS_USER WHERE USERID = ?"
+            let quitResult = await db.query(quitSql, [userId]);
+            
+            if(quitResult) {
+              result = "success";
+              msg = "탈퇴되었습니다.";
+            } else {
+              result = "fail";
+              msg = "오류가 발생했습니다.";
+            }
+
+          } else {
+            msg = "비밀번호가 틀립니다.";
+            result = "fail";
+          }
+          
+        } else {
+          console.log("없는 이메일");
+          msg = "없는 이메일입니다.";
+          result = "fail";
+        }
+
+        res.json({
+          result : result,
+          msg : msg
+        })
+    } catch (error) {
+        console.log("에러 발생!");
+        console.log(error);
+    }
+})
+
 module.exports = router;

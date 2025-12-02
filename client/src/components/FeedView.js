@@ -150,19 +150,22 @@ function FeedView() {
                         <>
                             <Button size="small"
                                 onClick={()=>{
-                                    alert("게시글 수정!");
+                                    // alert("게시글 수정!");
+                                    alert("준비중입니다.");
                                 }}
                             >수정</Button>
                             <Button size="small" variant="outlined" color="error"
                                 onClick={()=>{
-                                    alert("게시글 삭제!");
+                                    // alert("게시글 삭제!");
+                                    alert("준비중입니다.");
                                 }}
                             >삭제</Button>
                         </>
                     ) : (
                         <Button size="small" color="error"
                             onClick={()=>{
-                                alert("게시글 신고!");
+                                // alert("게시글 신고!");
+                                alert("준비중입니다.");
                             }}
                         >신고</Button>
                     )}
@@ -225,19 +228,22 @@ function FeedView() {
                                     <>
                                     <Button size="small"
                                         onClick={()=>{
-                                            alert("댓글 수정!");
+                                            // alert("댓글 수정!");
+                                            alert("준비중입니다.");
                                         }}
                                     >수정</Button>
                                     <Button size="small" color='error' variant='outlined'
                                         onClick={()=>{
-                                            alert("댓글 삭제!");
+                                            // alert("댓글 삭제!");
+                                            alert("준비중입니다.");
                                         }}
                                     >삭제</Button>
                                     </>
                                 ) : (
                                     <Button size="small" color='error'
                                         onClick={()=>{
-                                            alert("댓글 신고!");
+                                            // alert("댓글 신고!");
+                                            alert("준비중입니다.");
                                         }}
                                     >신고</Button>
                                 )}
@@ -287,19 +293,22 @@ function FeedView() {
                                     <>
                                         <Button size="small"
                                             onClick={()=>{
-                                            alert("대댓글 수정!");
+                                            // alert("대댓글 수정!");
+                                            alert("준비중입니다.");
                                         }}
                                         >수정</Button>
                                         <Button size="small" color='error' variant='outlined'
                                             onClick={()=>{
-                                            alert("대댓글 삭제!");
+                                            // alert("대댓글 삭제!");
+                                            alert("준비중입니다.");
                                         }}
                                         >삭제</Button>
                                     </>
                                     ) : (
                                     <Button size="small" color='error'
                                         onClick={()=>{
-                                            alert("대댓글 신고!");
+                                            // alert("대댓글 신고!");
+                                            alert("준비중입니다.");
                                         }}
                                     >신고</Button>
                                     )}

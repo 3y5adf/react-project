@@ -34,7 +34,7 @@ export default function RightSidebar() {
         mr: "5vw",
       }}
     >
-      <TextField
+      {/* <TextField
         fullWidth
         variant="outlined"
         placeholder="검색하세요"
@@ -42,7 +42,7 @@ export default function RightSidebar() {
         onChange={(e) => setKeyword(e.target.value)}
         onKeyDown={handleSearchKeyDown}
         size="small"
-      />
+      /> */}
     </Box>
   );
 }
