@@ -36,6 +36,10 @@
 + 실시간 채팅
   <p>
     <img src="readmeImg/chat_all.jpg" width="400" />
+    <img src="readmeImg/chat_join.jpg" width="400" />
+    <br>
+    <img src="readmeImg/chat_room.jpg" width="400" />
+    <img src="readmeImg/chat_create.jpg" width="400" />
   </p>
 + 게시글 작성
 + 댓글 / 대댓글 작성
