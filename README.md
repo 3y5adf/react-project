@@ -42,7 +42,16 @@
     <img src="readmeImg/chat_create.jpg" width="400" />
   </p>
 + 게시글 작성
+  <p>
+    <img src="readmeImg/feed_main.jpg" width="500" />
+    <br>
+    <img src="readmeImg/feed_add.jpg" width="400" />
+  </p>
 + 댓글 / 대댓글 작성
+  <p>
+    
+    <img src="readmeImg/feed_view.jpg" width="400" />
+  </p>
 
 
 
