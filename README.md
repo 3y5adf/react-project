@@ -43,7 +43,7 @@
   </p>
 + 게시글 작성
   <p>
-    <img src="readmeImg/feed_main.jpg" width="500" />
+    <img src="readmeImg/feed_main.jpg" width="400" />
     <br>
     <img src="readmeImg/feed_add.jpg" width="400" />
   </p>
@@ -51,6 +51,11 @@
   <p>
     
     <img src="readmeImg/feed_view.jpg" width="400" />
+  </p>
++ 로그아웃 / 탈퇴
+  <p>
+    <img src="readmeImg/setting.jpg" width="400" />
+    <img src="readmeImg/quit.jpg" width="400" />
   </p>
 
 
