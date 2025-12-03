@@ -35,20 +35,20 @@
 ## 🛠사용기술
 
 
-###front
+### front
 
 + react
 + mui
 + react router
 
   
-###back
+### back
 
 + node.js / express
 + jwt
 
   
-###db
+### db
 
 + mysql
 
