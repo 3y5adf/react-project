@@ -7,7 +7,8 @@ import {
   Box,
   Avatar,
   Divider,
-  Stack
+  Stack,
+  Card
 } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
@@ -126,6 +127,11 @@ function FeedView() {
                 bgcolor: "background.paper",
             }}
         >
+            <Card sx={{ mb:2,p: 1, boxShadow: 0, borderBottom: "1px solid #eee" }}>
+                <Typography variant="h6" fontWeight="700">
+                    {info.TITLE}
+                </Typography>
+            </Card>
             {/* 작성자 정보 */}
             <Stack 
                 direction="row" 
@@ -173,7 +179,14 @@ function FeedView() {
             </Stack>
 
             {/* 글 내용 */}
-            <Typography variant="body1" sx={{ m: 2 }}>
+            <Typography 
+                variant="body1" 
+                sx={{
+                    m: 2 ,
+                    lineHeight: 1.5,
+                    minHeight: "calc(1.5em * 6)"
+                }}
+            >
                 {info.CONTENTS}
             </Typography>
 

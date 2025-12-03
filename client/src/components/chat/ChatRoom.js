@@ -103,43 +103,43 @@ function markAsRead() {
 
   // ⭐ 스크롤 이벤트 감지
   useEffect(() => {
-    const container = messageContainerRef.current;
-    if (!container) return;
+  const container = messageContainerRef.current;
+  if (!container) return;
 
-    const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = container;
-      const isAtBottom = scrollHeight - scrollTop - clientHeight < 50;
-      
-      // 사용자가 맨 아래에 있지 않으면 스크롤 중으로 간주
-      setIsUserScrolling(!isAtBottom);
-    };
+  const handleScroll = () => {
+    const { scrollTop, scrollHeight, clientHeight } = container;
+    const isAtBottom = scrollHeight - scrollTop - clientHeight < 100; // 100px 여유
+    
+    setIsUserScrolling(!isAtBottom);
+  };
 
-    container.addEventListener('scroll', handleScroll);
-    return () => container.removeEventListener('scroll', handleScroll);
-  }, []);
+  container.addEventListener('scroll', handleScroll);
+  return () => container.removeEventListener('scroll', handleScroll);
+}, []);
 
-  // ⭐ 메시지가 로드될 때 스크롤 처리
-  useEffect(() => {
-    if (messages.length === 0) return;
+// 메시지 변경 시 스크롤 처리
+useEffect(() => {
+  if (messages.length === 0) return;
 
-    // 1. 최초 로드 시에만 읽지 않은 메시지 위치로 스크롤
-    if (isInitialLoad && lastReadMsgNo > 0) {
-      setTimeout(() => {
-        if (unreadStartRef.current) {
-          unreadStartRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-        } else {
-          messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-        }
-        setIsInitialLoad(false); // 최초 로드 완료
-      }, 100);
-      return;
-    }
+  if (isInitialLoad && lastReadMsgNo > 0) {
+    setTimeout(() => {
+      if (unreadStartRef.current) {
+        unreadStartRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }
+      setIsInitialLoad(false);
+    }, 100);
+    return;
+  }
 
-    // 2. 최초 로드가 아니고, 사용자가 스크롤 중이 아닐 때만 맨 아래로
-    if (!isInitialLoad && !isUserScrolling) {
+  // 초기 로드 이후에는 항상 맨 아래가 보이면 자동 스크롤
+  if (!isInitialLoad && !isUserScrolling) {
+    setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
+    }, 50);
+  }
+}, [messages]);
 
   // ⭐ 마지막 읽은 메시지 번호 가져오기
   function getLastRead() {
