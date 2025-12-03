@@ -27,7 +27,7 @@
 
 + 회원가입 / 로그인 (JWT 인증)
   <p>
-    <a>
+    <a href="readmeImg/login.jpg">
       <img src="readmeImg/login.jpg" width="500" />
     </a>
     <br>
