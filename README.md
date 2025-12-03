@@ -29,8 +29,8 @@
   <p>
     <img src="readmeImg/login.jpg" width="500" />
     <br>
-    <img src="readmeImg/join.jpg" width="500" />
-    <img src="readmeImg/join2.jpg" width="500" />
+    <img src="readmeImg/join.jpg" width="400" />
+    <img src="readmeImg/join2.jpg" width="400" />
   </p>
   
 + 실시간 채팅
