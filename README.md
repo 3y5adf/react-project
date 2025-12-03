@@ -27,7 +27,7 @@
 
 + 회원가입 / 로그인 (JWT 인증)
   <p>
-    <img src="readmeImg/login.jpg" width="200" />
+    <img src="readmeImg/login.jpg" width="400" />
   </p>
   
 + 실시간 채팅
