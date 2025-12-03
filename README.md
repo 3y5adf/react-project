@@ -27,34 +27,57 @@
 
 + 회원가입 / 로그인 (JWT 인증)
   <p>
-    <img src="readmeImg/login.jpg" width="500" />
+    <a>
+      <img src="readmeImg/login.jpg" width="500" />
+    </a>
     <br>
-    <img src="readmeImg/join.jpg" width="400" />
-    <img src="readmeImg/join2.jpg" width="400" />
+    <a>
+      <img src="readmeImg/join.jpg" width="400" />
+    </a>
+    <a>
+      <img src="readmeImg/join2.jpg" width="400" />
+    </a>
   </p>
   
 + 실시간 채팅
   <p>
-    <img src="readmeImg/chat_all.jpg" width="400" />
-    <img src="readmeImg/chat_join.jpg" width="400" />
+    <a>
+      <img src="readmeImg/chat_all.jpg" width="400" />
+    </a>
+    <a>
+      <img src="readmeImg/chat_join.jpg" width="400" />
+    </a>
     <br>
-    <img src="readmeImg/chat_room.jpg" width="400" />
-    <img src="readmeImg/chat_create.jpg" width="400" />
+    <a>
+      <img src="readmeImg/chat_room.jpg" width="400" />
+    </a>
+    <a>
+      <img src="readmeImg/chat_create.jpg" width="400" />
+    </a>
   </p>
 + 게시글 작성
   <p>
-    <img src="readmeImg/feed_main.jpg" width="400" />
-    <img src="readmeImg/feed_add.jpg" width="400" />
+    <a>
+      <img src="readmeImg/feed_main.jpg" width="400" />
+    </a>
+    <a>
+      <img src="readmeImg/feed_add.jpg" width="400" />
+    </a>
   </p>
 + 댓글 / 대댓글 작성
   <p>
-    
-    <img src="readmeImg/feed_view.jpg" width="400" />
+    <a>
+      <img src="readmeImg/feed_view.jpg" width="400" />
+    </a>
   </p>
 + 로그아웃 / 탈퇴
   <p>
-    <img src="readmeImg/setting.jpg" width="400" />
-    <img src="readmeImg/quit.jpg" width="400" />
+    <a>
+      <img src="readmeImg/setting.jpg" width="400" />
+    </a>
+    <a>
+      <img src="readmeImg/quit.jpg" width="400" />
+    </a>
   </p>
 
 
