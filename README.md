@@ -36,17 +36,20 @@
 
 
 ###front
+
 + react
 + mui
 + react router
 
   
 ###back
+
 + node.js / express
 + jwt
 
   
 ###db
+
 + mysql
 
 
