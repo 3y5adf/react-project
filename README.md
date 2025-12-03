@@ -34,6 +34,9 @@
   </p>
   
 + 실시간 채팅
+  <p>
+    <img src="readmeImg/chat_all.jpg" width="400" />
+  </p>
 + 게시글 작성
 + 댓글 / 대댓글 작성
 
