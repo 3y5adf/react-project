@@ -44,26 +44,26 @@ SNS를 직접 설계 및 구현해보고자 기획하게 되었습니다.
 + 실시간 채팅
   <p>
     <a>
-      <img src="readmeImg/실시간 채팅 - 목록.jpg" width="400" />
+      <img src="readmeImg/실시간 채팅 - 목록.jpg" width="300" />
     </a>
     <a>
-      <img src="readmeImg/실시간 채팅 - 참여중.jpg" width="400" />
+      <img src="readmeImg/실시간 채팅 - 참여중.jpg" width="300" />
     </a>
     <br>
     <a>
-      <img src="readmeImg/실시간 채팅 - 채팅.jpg" width="400" />
+      <img src="readmeImg/실시간 채팅 - 채팅.jpg" width="300" />
     </a>
     <a>
-      <img src="readmeImg/실시간 채팅 - 생성.jpg" width="400" />
+      <img src="readmeImg/실시간 채팅 - 생성.jpg" width="300" />
     </a>
   </p>
 + 게시글 작성
   <p>
     <a>
-      <img src="readmeImg/피드 - 목록.jpg" width="400" />
+      <img src="readmeImg/피드 - 목록.jpg" width="300" />
     </a>
     <a>
-      <img src="readmeImg/피드 - 작성.jpg" width="400" />
+      <img src="readmeImg/피드 - 작성.jpg" width="300" />
     </a>
   </p>
 + 댓글 / 대댓글 작성
@@ -75,10 +75,10 @@ SNS를 직접 설계 및 구현해보고자 기획하게 되었습니다.
 + 로그아웃 / 탈퇴
   <p>
     <a>
-      <img src="readmeImg/로그아웃.jpg" width="400" />
+      <img src="readmeImg/로그아웃.jpg" width="300" />
     </a>
     <a>
-      <img src="readmeImg/탈퇴.jpg" width="400" />
+      <img src="readmeImg/탈퇴.jpg" width="300" />
     </a>
   </p>
 
