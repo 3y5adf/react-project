@@ -60,25 +60,25 @@ SNS를 직접 설계 및 구현해보고자 기획하게 되었습니다.
 + 게시글 작성
   <p>
     <a>
-      <img src="readmeImg/feed_main.jpg" width="400" />
+      <img src="readmeImg/피드 - 목록.jpg" width="400" />
     </a>
     <a>
-      <img src="readmeImg/feed_add.jpg" width="400" />
+      <img src="readmeImg/피드 - 작성.jpg" width="400" />
     </a>
   </p>
 + 댓글 / 대댓글 작성
   <p>
     <a>
-      <img src="readmeImg/feed_view.jpg" width="400" />
+      <img src="readmeImg/피드 - 상세.jpg" width="400" />
     </a>
   </p>
 + 로그아웃 / 탈퇴
   <p>
     <a>
-      <img src="readmeImg/setting.jpg" width="400" />
+      <img src="readmeImg/로그아웃.jpg" width="400" />
     </a>
     <a>
-      <img src="readmeImg/quit.jpg" width="400" />
+      <img src="readmeImg/탈퇴.jpg" width="400" />
     </a>
   </p>
 
