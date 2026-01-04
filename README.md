@@ -34,10 +34,10 @@ SNS를 직접 설계 및 구현해보고자 기획하게 되었습니다.
     </a>
     <br>
     <a>
-      <img src="readmeImg/join.jpg" width="400" />
+      <img src="readmeImg/회원가입.jpg" width="400" />
     </a>
     <a>
-      <img src="readmeImg/join2.jpg" width="400" />
+      <img src="readmeImg/회원가입-프로필사진 선택.jpg" width="400" />
     </a>
   </p>
   
