@@ -75,7 +75,7 @@ SNS를 직접 설계 및 구현해보고자 기획하게 되었습니다.
 + 로그아웃 / 탈퇴
   <p>
     <a>
-      <img src="readmeImg/로그아웃.jpg" width="300" />
+      <img src="readmeImg/로그아웃.jpg" width="400" />
     </a>
     <a>
       <img src="readmeImg/탈퇴.jpg" width="400" />
