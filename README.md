@@ -44,17 +44,17 @@ SNS를 직접 설계 및 구현해보고자 기획하게 되었습니다.
 + 실시간 채팅
   <p>
     <a>
-      <img src="readmeImg/chat_all.jpg" width="400" />
+      <img src="readmeImg/실시간 채팅 - 목록.jpg" width="400" />
     </a>
     <a>
-      <img src="readmeImg/chat_join.jpg" width="400" />
+      <img src="readmeImg/실시간 채팅 - 참여중.jpg" width="400" />
     </a>
     <br>
     <a>
-      <img src="readmeImg/chat_room.jpg" width="300" />
+      <img src="readmeImg/실시간 채팅 - 채팅.jpg" width="300" />
     </a>
     <a>
-      <img src="readmeImg/chat_create.jpg" width="300" />
+      <img src="readmeImg/실시간 채팅 - 생성.jpg" width="300" />
     </a>
   </p>
 + 게시글 작성
