@@ -30,7 +30,7 @@ SNS를 직접 설계 및 구현해보고자 기획하게 되었습니다.
 + 회원가입 / 로그인 (JWT 인증)
   <p>
     <a href="readmeImg/login.jpg">
-      <img src="readmeImg/login.jpg" width="500" />
+      <img src="readmeImg/로그인.jpg" width="500" />
     </a>
     <br>
     <a>
