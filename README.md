@@ -54,7 +54,7 @@ SNS를 직접 설계 및 구현해보고자 기획하게 되었습니다.
       <img src="readmeImg/실시간 채팅 - 채팅.jpg" width="300" />
     </a>
     <a>
-      <img src="readmeImg/실시간 채팅 - 생성.jpg" width="300" />
+      <img src="readmeImg/실시간 채팅 - 생성.jpg" width="400" />
     </a>
   </p>
 + 게시글 작성
